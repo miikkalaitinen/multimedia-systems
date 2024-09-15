@@ -20,7 +20,6 @@ app.get('/video/:filename', async (req, res, next) => {
 
   try {
     const filename = req.params.filename;
-    res.setHeader('Access-Control-Allow-Origin', '*');
     
     if (!filename) {
             res.status(400).send('Bad Request, filename is required, eg: /video/filename.mp4');

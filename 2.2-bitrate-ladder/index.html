@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Dash.js player</title>
+        <style>
+            video {
+                width: 640px;
+                height: 360px;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <!-- Adding video element here -->
+            <video id="videoPlayer" controls></video>
+        </div>
+        <!-- Adding dash.js here -->
+        <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+        <script>
+        var player, duration, started; //NOTE: Do not edit this line and do not enclose this line inside a function (grader uses and needs access to these variables)
+        
+        // Creating a dashjs player and assigning it to the "player" variable
+        player = dashjs.MediaPlayer().create();
+        
+        // Initializing the player and making it play your MPD URL
+        player.initialize(document.querySelector("#videoPlayer"), "https://cse4265-2024-792826.lm.r.appspot.com/video/stream/manifest.mpd", true);
+        </script>
+    </body>
+</html>
