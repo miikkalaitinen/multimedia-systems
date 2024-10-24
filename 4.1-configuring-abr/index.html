@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Dash.js player</title>
+        <style>
+            video {
+                width: 640px;
+                height: 360px;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <!-- Adding video element here -->
+            <video id="videoPlayer" controls></video>
+        </div>
+        <!-- Adding dash.js here -->
+        <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+        <script>
+        var player, duration, started; //NOTE: Do not edit this line and do not enclose this line inside a function (grader uses and needs access to these variables)
+        var url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
+        var video = document.querySelector("#videoPlayer");
+        
+        //TODO: Create a dashjs player and assign it to the "player" variable initialized above
+        //TODO: Update player settings according to the requirements
+        //TODO: Initialize the player to play the URL above
+
+        player = dashjs.MediaPlayer().create();
+        
+        player.updateSettings({
+            streaming: {
+                abr: {
+                    useDefaultABRRules: false,
+                    ABRStrategy: 'abrBola',
+                    initialBitrate: { video: 1000 },
+                    minBitrate: { video: 500 }
+                },
+                buffer: {
+                    fastSwitchEnabled: false,
+                }
+            }
+        });
+
+        player.initialize(video, url, true);
+
+        </script>
+    </body>
+</html>

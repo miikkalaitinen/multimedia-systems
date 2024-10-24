@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Dash.js player</title>
+        <style>
+            video {
+                width: 640px;
+                height: 360px;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <!-- Adding video element here -->
+            <video id="videoPlayer" controls></video>
+            <p>Video has played: <span id="playbackTime">0</span> seconds</p>
+            <p>Bandwidth usage: <span id="bandwidthPercentage">0</span>%</p> <!-- Bandwidth display -->
+            <p>Current Throughput: <span id="currentThroughput">0</span> kbps</p> <!-- Throughput display -->
+            <p>Video Bitrate: <span id="currentBitrate">0</span> kbps</p> <!-- Available bandwidth display -->
+        </div>
+        
+        <!-- Adding dash.js here -->
+        <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+        <script src="BitrateRule.js"></script>
+        <script>
+        var player, duration, started;
+        var url = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd";
+        var video = document.querySelector("#videoPlayer");
+
+        player = dashjs.MediaPlayer().create();
+        
+        player.updateSettings({
+            streaming: {
+                abr: {
+                    useDefaultABRRules: false,
+                },
+            buffer: {
+                stableBufferTime: 9,
+                bufferTimeAtTopQuality: 9,
+                bufferTimeAtTopQualityLongForm: 9
+            }
+        }});
+
+        player.addABRCustomRule('qualitySwitchRules', 'BitrateRule', BitrateRule);
+        player.initialize(video, url, true);
+
+        var playbackTimeElement = document.getElementById('playbackTime');
+        videoPlayer.addEventListener('timeupdate', function() {
+            playbackTimeElement.textContent = Math.floor(videoPlayer.currentTime);
+        });
+
+        // Function to update bandwidth stats in real-time
+        function updateBandwidthPercentage() {
+            let currentThroughput = player.getAverageThroughput('video'); // Throughput in kbps
+            let currentQualityIndex = player.getQualityFor('video'); // Get current quality index
+            let currentBitrate = player.getBitrateInfoListFor('video')[currentQualityIndex].bitrate / 1000; // Get current quality bandwidth in kbps
+            
+            // Calculate percentage of available bandwidth used by current throughput
+            let percentage = (currentBitrate / currentThroughput) * 100;
+
+            // Update the values in the HTML
+            document.getElementById('currentThroughput').textContent = currentThroughput.toFixed(2);
+            document.getElementById('currentBitrate').textContent = currentBitrate.toFixed(2);
+            document.getElementById('bandwidthPercentage').textContent = percentage.toFixed(2);
+        }
+
+        // Update every 1 second
+        setInterval(updateBandwidthPercentage, 1000);
+
+        </script>
+    </body>
+</html>
